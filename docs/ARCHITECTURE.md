@@ -25,7 +25,7 @@ The system accepts arbitrary vendor webhook payloads, persists them quickly, pro
 - **Queue:** Postgres-backed `processing_jobs` table
 - **Workers:** Raw Python worker processes
 - **LLM framework:** PydanticAI
-- **LLM provider:** OpenAI, Anthropic, Gemini, or another PydanticAI-supported provider
+- **LLM provider:** Groq through PydanticAI
 - **Validation:** Pydantic
 - **Local runtime:** Docker Compose
 
@@ -522,8 +522,8 @@ Example `.env.example`:
 
 ```bash
 DATABASE_URL=postgresql://webhook:webhook@postgres:5432/webhook_ingestion
-LLM_MODEL=openai:gpt-4.1-mini
-OPENAI_API_KEY=replace-me
+LLM_MODEL=groq:llama-3.3-70b-versatile
+GROQ_API_KEY=replace-me
 WORKER_POLL_INTERVAL_SECONDS=1
 JOB_MAX_ATTEMPTS=3
 ```

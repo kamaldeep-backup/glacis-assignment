@@ -9,7 +9,7 @@ class Settings:
     database_max_pool_size: int = 10
     worker_poll_interval_seconds: float = 1.0
     job_max_attempts: int = 3
-    llm_model: str = "openai:gpt-4.1-mini"
+    llm_model: str = "groq:llama-3.3-70b-versatile"
 
 
 def get_settings() -> Settings:
@@ -24,5 +24,5 @@ def get_settings() -> Settings:
             os.getenv("WORKER_POLL_INTERVAL_SECONDS", "1")
         ),
         job_max_attempts=int(os.getenv("JOB_MAX_ATTEMPTS", "3")),
-        llm_model=os.getenv("LLM_MODEL", "openai:gpt-4.1-mini"),
+        llm_model=os.getenv("LLM_MODEL", "groq:llama-3.3-70b-versatile"),
     )
