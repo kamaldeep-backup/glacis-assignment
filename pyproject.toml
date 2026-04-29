@@ -1,0 +1,10 @@
+[project]
+name = "glacis-assignment"
+version = "0.1.0"
+description = "Minimal AI webhook ingestion service scaffold."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+]
