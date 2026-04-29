@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import json
+from typing import Any
 from uuid import UUID
 
 import asyncpg
@@ -102,6 +104,7 @@ async def fail_processing_job(
     stage: str,
     error_message: str,
     backoff_seconds: float,
+    llm_response: Any | None = None,
 ) -> bool:
     next_attempts = job.attempts + 1
     terminal = next_attempts >= job.max_attempts
@@ -129,6 +132,7 @@ async def fail_processing_job(
             stage=stage,
             error_message=error_message,
             attempts=next_attempts,
+            llm_response=llm_response,
         )
         return True
 
@@ -160,7 +164,11 @@ async def create_failed_event(
     stage: str,
     error_message: str,
     attempts: int,
+    llm_response: Any | None = None,
 ) -> UUID:
+    serialized_llm_response = (
+        json.dumps(llm_response, default=str) if llm_response is not None else None
+    )
     return await connection.fetchval(
         """
         INSERT INTO failed_events (
@@ -168,14 +176,16 @@ async def create_failed_event(
             job_id,
             stage,
             error_message,
+            llm_response,
             attempts
         )
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, $5::jsonb, $6)
         RETURNING id
         """,
         raw_event_id,
         job_id,
         stage,
         error_message,
+        serialized_llm_response,
         attempts,
     )

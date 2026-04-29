@@ -40,5 +40,16 @@ services:
       postgres:
         condition: service_healthy
 
+  normalization-worker:
+    build: .
+    command: python -m app.workers.normalization_worker
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://webhook:webhook@postgres:5432/webhook_ingestion
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:

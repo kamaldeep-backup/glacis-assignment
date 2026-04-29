@@ -90,3 +90,39 @@ async def mark_raw_event_failed(
         raw_event_id,
         error_message,
     )
+
+
+async def mark_raw_event_normalized(
+    connection: asyncpg.Connection,
+    *,
+    raw_event_id: UUID,
+) -> None:
+    await connection.execute(
+        """
+        UPDATE raw_events
+        SET status = 'NORMALIZED',
+            processed_at = now(),
+            error_message = NULL
+        WHERE id = $1
+        """,
+        raw_event_id,
+    )
+
+
+async def mark_raw_event_unclassified(
+    connection: asyncpg.Connection,
+    *,
+    raw_event_id: UUID,
+    reason: str,
+) -> None:
+    await connection.execute(
+        """
+        UPDATE raw_events
+        SET status = 'UNCLASSIFIED',
+            processed_at = now(),
+            error_message = $2
+        WHERE id = $1
+        """,
+        raw_event_id,
+        reason,
+    )
